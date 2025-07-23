@@ -46,6 +46,7 @@ io.on("connection", (socket) => {
     // Optionally remove player from game
   });
 });
-
+app.get("/", (req, res) => {
+  res.send("Blackjack API är igång. Anslut med Socket.IO!");
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
