@@ -1,9 +1,10 @@
+// === server/index.js ===
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const { createGame, joinGame, playMove } = require("./gameLogic");
- 
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -11,6 +12,11 @@ const io = new Server(server, {
     origin: "*",
     methods: ["GET", "POST"]
   }
+});
+
+// Health check for browser
+app.get("/", (req, res) => {
+  res.send("Blackjack API är igång. Anslut med Socket.IO!");
 });
 
 let games = {}; // gameId => game state
@@ -43,10 +49,9 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
-    // Optionally remove player from game
+    // Optionally handle player removal
   });
 });
-app.get("/", (req, res) => {
-  res.send("Blackjack API är igång. Anslut med Socket.IO!");
+
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
