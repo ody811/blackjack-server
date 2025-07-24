@@ -1,4 +1,3 @@
-// === server/index.js ===
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -6,16 +5,23 @@ const cors = require("cors");
 const { createGame, joinGame, playMove } = require("./gameLogic");
 
 const app = express();
+
+// ✅ Lägg till CORS middleware för Express
+app.use(cors({
+  origin: "https://blackjack-client-ui-1.onrender.com",
+  methods: ["GET", "POST"]
+}));
+
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: "https://blackjack-client-ui-1.onrender.com",
-
     methods: ["GET", "POST"]
   }
 });
 
-// Health check for browser
+// ✅ Enkel "hälsokoll" endpoint (frivillig men bra)
 app.get("/", (req, res) => {
   res.send("Blackjack API är igång. Anslut med Socket.IO!");
 });
@@ -50,7 +56,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
-    // Optionally handle player removal
+    // Här kan du lägga till logik för att ta bort spelare om du vill
   });
 });
 
